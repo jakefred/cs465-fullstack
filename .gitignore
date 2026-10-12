@@ -67,3 +67,5 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+
+/CS 465 Full Stack Guide.pdf
