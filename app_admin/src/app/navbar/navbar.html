@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand navbar-light bg-light mb-4" aria-label="Main navigation">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">
+      <img src="assets/images/logo.png" alt="Travlr Getaways" class="brand-logo">
+    </a>
+    <a class="nav-link" routerLink="/">Trips</a>
+    <div class="ms-auto">
+      @if (isLoggedIn()) {
+        <button type="button" class="btn btn-outline-secondary" (click)="onLogout()">Log Out</button>
+      } @else {
+        <a class="btn btn-outline-primary" routerLink="/login">Log In</a>
+      }
+    </div>
+  </div>
+</nav>

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const host = process.env.DB_HOST || '127.0.0.1';
-const dbURI = `mongodb://${host}/travlr`;
+const dbName = process.env.DB_NAME || 'travlr';
+const dbURI = `mongodb://${host}/${dbName}`;
 const readLine = require('readline');
 
 // Make the connection after a one-second delay.
@@ -24,7 +25,7 @@ mongoose.connection.on('disconnected', () => {
 });
 
 // Windows specific listener
-if (process.platform === 'win32') {
+if (process.platform === 'win32' && process.stdin.isTTY) {
   const r1 = readLine.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -63,4 +64,5 @@ connect();
 
 // Import Mongoose schema
 require('./travlr');
+require('./user');
 module.exports = mongoose;

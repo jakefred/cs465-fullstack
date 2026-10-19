@@ -1,5 +1,8 @@
 <div class="col-md-4">
     <h2 class="text-center">Edit Trip</h2>
+    @if (formError()) {
+        <div role="alert" class="alert alert-danger">{{ formError() }}</div>
+    }
     <form *ngIf="editForm" [formGroup]="editForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
             <label for="code">Code:</label>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,6 +15,7 @@ export class EditTrip implements OnInit {
   public editForm!: FormGroup;
   trip!: Trip;
   submitted = false;
+  readonly formError = signal('');
   message: string = '';
 
   constructor(
@@ -72,6 +73,7 @@ export class EditTrip implements OnInit {
   }
 
   public onSubmit(): void {
+    this.formError.set('');
     this.submitted = true;
     if (this.editForm.valid) {
       this.tripDataService.updateTrip(this.editForm.value).subscribe({
@@ -80,7 +82,9 @@ export class EditTrip implements OnInit {
           this.router.navigate(['']);
         },
         error: (error) => {
-          console.log('Error: ' + error);
+          this.formError.set(error.status === 401
+            ? 'Your session has expired. Please log in again.'
+            : 'Unable to save the trip. Please try again.');
         }
       });
     }

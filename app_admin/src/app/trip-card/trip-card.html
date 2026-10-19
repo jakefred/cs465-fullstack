@@ -11,8 +11,10 @@
         </p>
         <p class="card-text" [innerHTML]="trip.description">
         </p>
+        @if (isLoggedIn()) {
         <div>
             <button type="button" (click)="editTrip(trip)" class="btn btn-info">Edit Trip</button>
         </div>
+        }
     </div>
 </div>

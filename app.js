@@ -1,8 +1,15 @@
+require('dotenv').config({ quiet: true });
+if (!process.env.JWT_SECRET) {
+  throw new Error('Set JWT_SECRET in .env before starting the application.');
+}
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var passport = require('passport');
+require('./app_api/config/passport');
 
 // Define routers
 var indexRouter = require('./app_server/routes/index');
@@ -29,11 +36,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 // Allow the Angular admin site to request data from the API.
 app.use('/api', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
@@ -53,6 +61,12 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  if (req.path === '/api' || req.path.startsWith('/api/')) {
+    const status = err.name === 'UnauthorizedError' ? 401 : (err.status || 500);
+    return res.status(status).json({
+      message: status === 500 ? 'An unexpected server error occurred.' : err.message
+    });
+  }
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

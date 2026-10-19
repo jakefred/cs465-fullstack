@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { TripDataService } from '../services/trip-data.service';
 export class AddTrip implements OnInit {
   public addForm!: FormGroup;
   submitted = false;
+  readonly formError = signal('');
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,6 +36,7 @@ export class AddTrip implements OnInit {
   }
 
   public onSubmit(): void {
+    this.formError.set('');
     this.submitted = true;
     if (this.addForm.valid) {
       this.tripService.addTrip(this.addForm.value).subscribe({
@@ -43,7 +45,9 @@ export class AddTrip implements OnInit {
           this.router.navigate(['']);
         },
         error: (error) => {
-          console.log('Error: ' + error);
+          this.formError.set(error.status === 401
+            ? 'Your session has expired. Please log in again.'
+            : 'Unable to save the trip. Please try again.');
         }
       });
     }
