@@ -1,0 +1,23 @@
+<div class="row">
+  <section class="col-12 col-md-8 col-lg-6" aria-labelledby="login-heading">
+    <h2 id="login-heading">Login</h2>
+    <form (ngSubmit)="onLoginSubmit()" [attr.aria-busy]="submitted()">
+      @if (formError()) {
+        <div role="alert" class="alert alert-danger">{{ formError() }}</div>
+      }
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input id="email" type="email" name="email" class="form-control"
+          autocomplete="username" required [(ngModel)]="credentials.email">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input id="password" type="password" name="password" class="form-control"
+          autocomplete="current-password" required [(ngModel)]="credentials.password">
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="submitted()">
+        {{ submitted() ? 'Signing in...' : 'Sign In!' }}
+      </button>
+    </form>
+  </section>
+</div>
